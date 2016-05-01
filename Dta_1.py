@@ -1,19 +1,22 @@
 import math
 import random
 import time
+
 start_time = time.time()
 
-print "Hello world! "
+# print "Hello world! "
 # using this file we will start processing the data, first let assume that the data will be random points.
-Beta_Inv = 1
-Beta_Rout = 1
+Beta_Inv = 1  # this is some factor to weight the inventory cost, we will need it for sensitivity analysis.
+Beta_Rout = 15  # this is some factor to weight the transportation cost, we will need it for sensitivity analysis.
 N = 7  # number of customers in each instance plus the depot.
-T = 9  # Number of planning periods
-L = math.floor(math.log1p(T - 1))
+T = 9  # Number of planning periods.
+
+
+L = math.floor(math.log1p(T))  # why it was -1
 Nodes = N * (L + 1) + 1  # plus one for the artificial node
 Roots = 0
 
-#  To generate the coordination of nodes in the graph, deamnd, and holding cost of each node.
+#  To generate the coordination of nodes in the graph of each node and then calculate the distance between each pair.
 
 a = 0
 b = 1000
@@ -33,7 +36,7 @@ for iiter1 in range(len(X)):
         cij[iiter1].append(
             Beta_Rout * (((X[iiter1] - X[iiter2]) ** 2 + (Y[iiter1] - Y[iiter2]) ** 2) ** 0.5))  # math.floor
 
-# to generate demand quantities
+# to generate demand quantities for each customer for each planning period.
 a = 30
 b = 50
 d_it = []
@@ -45,7 +48,7 @@ for iiter1 in range(0, N):
         else:
             d_it[iiter1].append(math.floor((b - a) * random.random() + a))
 
-# to generate holding cost
+# to generate holding cost for each customer.
 a = 3
 b = 8
 h_it = []
@@ -56,8 +59,11 @@ for iiter1 in range(0, N):
             h_it[iiter1].append(0)
         else:
             h_it[iiter1].append(math.floor((b - a) * random.random() + a))
-# for the time being we will not make Cij, instead we will update the cost of Cij elements on site for GW Algorithm
 
+
+# the data part ends up here, from now and on the coding of the approximation algorithm.
+
+###################
 Visits = {}
 for key in range(0, int(L + 1)):
     Var = int(math.floor(T / 2 ** key))
@@ -71,7 +77,7 @@ for key in range(0, int(L + 1)):
         #  del LLo[-1]
         Visits.update({key: LLo})
 
-#  print Visits
+# print Visits
 
 Visit_Scheduling = {}
 A = [range(1, T + 1), [0] * T]
@@ -108,7 +114,7 @@ for customer in range(1, N + 1):
             Str = Rng[0][int(time)] - 1
             EnD = int(Rng[1][int(time)])
             Level = sum(d_it[int(customer - 1)][Str:EnD]) - d_it[customer - 1][time]
-            LevelCost = Level * h_it[customer-1][time]
+            LevelCost = Level * h_it[customer - 1][time]
             Mat.append(LevelCost)
         Val = sum(Mat)
         Inv_Level.update({key: Val})  # by this, the holding cost of each node is ready. i.e. penalty of each node.
@@ -222,5 +228,90 @@ while Flag == 1:
         DummyValue += Groups_Members[i]['Lambda']
     if DummyValue == 0:
         Flag = 0
-print Groups_Members
+# print Groups_Members
 
+GW_Result = Groups_Members[0]['Members']
+GW_Result.sort()
+GW_Result.pop(0)
+
+# print "GW_Result", GW_Result
+Nodz_Scheduling = {}
+for key in range(int(L + 1)):
+    Nodz_Scheduling.update({key: []})
+
+for iiter in GW_Result:
+    NodeSche = math.floor(float(iiter) / N)
+    Lisht = range(int(L + 2))
+    if iiter % N == 0:
+        Node2 = N
+    else:
+        Node2 = iiter % N
+    if math.floor(float(iiter) / N) > L:
+        Val = int(math.floor(float(iiter) / N)) - 1
+    else:
+        Val = int(math.floor(float(iiter) / N))
+    if iiter % N == 0 and math.floor(float(iiter) / N) <= L:
+        Val -= 1
+    # print Node2, Val
+    # by this we converted the set of nodes from the GW graph to the original graph.
+    # Now let us create a dictionary for each scheduling \in L and put the nodes following each scheduling.
+    Mat = Nodz_Scheduling[Val]
+    Mat.append(Node2)
+    Nodz_Scheduling.update({Val: Mat})  # by now we calculated the Q_i and G_i
+
+# print "Nodz_Scheduling", Nodz_Scheduling
+SQ = {}
+for i in range(int(L) + 1):
+    SQ.update({i: []})
+
+Customers = range(1, N + 1, 1)
+RV = reversed(Nodz_Scheduling.keys())
+Refill_Time = {}  # this dictionary will have a key for each customer with its name, then the value of that key is the
+#  times to visit that customer.
+for i in RV:
+    # print "Outer", Customers
+    Elements = Nodz_Scheduling[i]
+    Mat = []
+    Prev_Iter_List = Customers
+    Counter = int(len(Prev_Iter_List)) - 1
+    while Counter >= 0:
+        # print "Inner", Prev_Iter_List[Counter]
+        if Prev_Iter_List[Counter] in Elements:
+            Mat.append(Prev_Iter_List[Counter])
+            SQ.update({i: Mat})
+            Refill_Time.update({Prev_Iter_List[Counter]: i})
+            Customers.remove(Prev_Iter_List[Counter])
+            Counter -= 1
+        else:
+            # print "Stop"  # then the element is not in this list, somewhere else in another group
+            Counter -= 1
+Served = Refill_Time.keys()
+for i in range(1, N + 1):
+    if i not in Served:
+        Refill_Time.update({i: int(L)})
+
+for i in SQ.keys():
+    if len(SQ[i]) > 0 and 1 not in SQ[i]:
+        Mat = SQ[i]
+        Mat.append(1)
+        SQ.update({i: Mat})
+# print SQ
+# print "Refill_Time", Refill_Time
+# Now let us establish the scheduling of visits for each customer:
+Visiting_Time = {}
+Delivery_Quantity = {}
+for i in range(2, N + 1):
+    t = Refill_Time[i]
+    Mot = []
+    Mat = [1]  # always visit customer at period 1.
+    for j in range(1, int(math.floor(T / 2 ** t) + 1)):
+        Mat.append(j * 2 ** t)
+        Mot.append(sum(d_it[i - 1][Mat[j - 1]: Mat[j]]))
+    if Mot.count(1) > 1:
+        Mot.pop(1)
+    Mot.append(sum(d_it[i - 1][Mat[j]: int(T)]))
+    Visiting_Time.update({i: Mat})
+    Delivery_Quantity.update({i: Mot})
+print "Visiting Time", Visiting_Time  # Awesome
+print "Delivery Quantity", Delivery_Quantity
+#  Now let us establish the trees connecting nodes in each round.

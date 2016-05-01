@@ -1,0 +1,44 @@
+{%- extends 'base.html' -%}
+
+{% block sidebar %}
+              <ul class="sidebar-menu" id="nav-accordion">
+              	  	
+                  <li class="mt">
+                      <a href="/">
+                          <i class="fa fa-dashboard"></i>
+                          <span>Home</span>
+                      </a>
+                  </li>
+
+                  <li class="sub-menu">
+                      <a class="active" href="javascript:;" >
+                          <i class="fa fa-cogs"></i>
+                          <span>Data Input</span>
+                      </a>
+                      <ul class="sub">
+                          <li><a  href="/random">Random (Demo)</a></li>
+                          <li><a  href="manual">Manual</a></li>
+                          <li class="active"><a  href="text">Text File</a></li>
+                      </ul>
+                  </li>
+
+              </ul>
+{% endblock sidebar %}
+
+{% block heading %}
+Text File Upload 
+{% endblock heading %}
+
+{% block contents %}
+
+  <p align="justify">
+By default, the system has 1 depot. In the text file, list the number of customers N, then number of planning periods (T), followed by the distance matrix, delivery quantity matrix and holding cost matrix. Separate values using spaces and line breaks.
+
+
+      <form action = "/textOutput" method = "POST" 
+         enctype = "multipart/form-data">
+         <input type = "file" name = "file" />
+         <input type = "submit"/>
+      </form>
+  </p>
+{% endblock contents %}

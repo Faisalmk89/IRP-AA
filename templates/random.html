@@ -1,0 +1,45 @@
+{%- extends 'base.html' -%}
+
+{% block sidebar %}
+              <ul class="sidebar-menu" id="nav-accordion">
+              	  	
+                  <li class="mt">
+                      <a href="/">
+                          <i class="fa fa-dashboard"></i>
+                          <span>Home</span>
+                      </a>
+                  </li>
+
+                  <li class="sub-menu">
+                      <a class="active" href="javascript:;" >
+                          <i class="fa fa-cogs"></i>
+                          <span>Data Input</span>
+                      </a>
+                      <ul class="sub">
+                          <li class="active"><a  href="/random">Random (Demo)</a></li>
+                          <li><a  href="manual">Manual</a></li>
+                          <li><a  href="text">Text File</a></li>
+                      </ul>
+                  </li>
+
+              </ul>
+{% endblock sidebar %}
+
+{% block heading %}
+Random Input (Demo)
+{% endblock heading %}
+
+{% block contents %}
+	<p align="justify">
+	By default, the system has 1 depot. You can set the number of customers (N) and number of planning periods (T) with the form below.
+
+		<form action="/randomOutput" method="POST">
+			Number of customers (N): <br>	
+			<input type="text" name="N" value="6" size=10></input><br>
+			Number of planning periods (T): <br>	
+			<input type="text" name="T" value="9" size=10></input><br>			
+			<input type="submit"></input>
+		</form>
+	</p>
+
+{% endblock contents %}

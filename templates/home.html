@@ -1,0 +1,26 @@
+{%- extends 'base.html' -%}
+
+{% block contents %}
+	<p align="justify">
+We consider Inventory Routing Problem (IRP) which
+arise in the context of Vendor Managed Resupply (VMR) policy, where
+the supplier is responsible for the inventory levels at the customers’ site. The supplier decides when to supply each customer, how much to replenish each customer in each visit, and how to combine customers visits into vehicle routes. 
+	</p>
+	<p align="justify">
+We implement the approximation algorithm presented by <a href="http://drops.dagstuhl.de/opus/volltexte/2014/4698/pdf/15.pdf" target="_blank">Fukunaga et al. (2014)</a> which considered periodic IRP.
+	</p>
+	<p>
+Choose one of the options below for data input.
+    <ul>
+      <li>
+        <a href="/random">Random (Demo)</a>
+      </li>
+      <li>
+        <a href="/manual">Manual</a>
+      </li>
+      <li>
+        <a href="/text">Text File</a>
+      </li>
+    </ul>
+  </p>
+{% endblock contents %}

@@ -1,0 +1,81 @@
+{%- extends 'base.html' -%}
+
+{% block sidebar %}
+              <ul class="sidebar-menu" id="nav-accordion">
+              	  	
+                  <li class="mt">
+                      <a href="/">
+                          <i class="fa fa-dashboard"></i>
+                          <span>Home</span>
+                      </a>
+                  </li>
+
+                  <li class="sub-menu">
+                      <a class="active" href="javascript:;" >
+                          <i class="fa fa-cogs"></i>
+                          <span>Data Input</span>
+                      </a>
+                      <ul class="sub">
+                          <li><a  href="/random">Random (Demo)</a></li>
+                          <li class="active"><a  href="manual">Manual</a></li>
+                          <li><a  href="text">Text File</a></li>
+                      </ul>
+                  </li>
+
+              </ul>
+{% endblock sidebar %}
+
+{% block heading %}
+Manual Input
+{% endblock heading %}
+
+{% block contents %}
+	<p align="justify">
+	By default, the system has 1 depot. You can set the number of customers (N) and number of planning periods (T) with the form below. You are advised to use the <a href="/text">Text File</a> input method for large values of N and T.
+	</p>
+	<p>
+Number of customers (N): <br>	
+<input form="matrixforms" type="text" name="N" value="2" size=10></input><br>
+Number of planning periods (T): <br>	
+<input form="matrixforms" type="text" name="T" value="3" size=10></input><br>			
+	</p>
+
+<br>
+
+	<h4>
+Distance Matrix
+	</h4>
+	<p align="justify">
+Treat the depot as the first node and customers as other nodes in the graph. Input the distance between each pair of nodes in the text area below. Separate each value with a space, and start each new node on a new line. <br>
+<textarea form="matrixforms" name="C" rows="4" cols="50">1 2 3
+4 5 6
+7 8 9</textarea>
+	</p>
+
+	<h4>
+Delivery Quantity Matrix
+	</h4>
+	<p align="justify">
+Input the demand quantities of each customer for each plannning period in the text area below, with customers on the rows and planning periods on the columns.<br>
+<textarea form="matrixforms" name="D" rows="4" cols="50">1 2 3
+4 5 6</textarea>
+	</p>
+
+	<h4>
+Holding Cost Matrix
+	</h4>
+	<p align="justify">
+Input the holding costs that each customer incur for 1 unit of goods for each planning period in the text area below, with customers on the rows and planning periods on the columns.<br>
+<textarea form="matrixforms" name="H" rows="4" cols="50">1 2 3
+4 5 6</textarea>
+<form action="/manualOutput" method="POST" id="matrixforms">	
+	<input type="submit"></input>
+</form>
+	</p>
+
+{% endblock contents %}
+
+
+
+
+

@@ -1,0 +1,42 @@
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style_table.css') }}">
+
+{%- extends 'base.html' -%}
+
+{% block sidebar %}
+              <ul class="sidebar-menu" id="nav-accordion">
+              	  	
+                  <li class="mt">
+                      <a href="/">
+                          <i class="fa fa-dashboard"></i>
+                          <span>Home</span>
+                      </a>
+                  </li>
+
+                  <li class="sub-menu">
+                      <a href="javascript:;" >
+                          <i class="fa fa-cogs"></i>
+                          <span>Data Input</span>
+                      </a>
+                      <ul class="sub">
+                          <li><a  href="/random">Random (Demo)</a></li>
+                          <li><a  href="manual">Manual</a></li>
+                          <li><a  href="text">Text File</a></li>
+                      </ul>
+                  </li>
+
+              </ul>
+{% endblock sidebar %}
+
+{% block heading %}
+Schedules
+{% endblock heading %}
+
+{% block contents %}
+
+	<h4>
+Delivery Quantity per Planning Period
+	</h4>
+
+{{table_qty|safe}}
+
+{% endblock contents %}
