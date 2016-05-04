@@ -315,3 +315,5 @@ for i in range(2, N + 1):
 print "Visiting Time", Visiting_Time  # Awesome
 print "Delivery Quantity", Delivery_Quantity
 #  Now let us establish the trees connecting nodes in each round.
+#  Now let us establish the trees connecting nodes in each round. So I will establish a dictionary with key element
+#  as a time index, and the value is the nodes will be visited at the key time.
