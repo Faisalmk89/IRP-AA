@@ -317,3 +317,13 @@ print "Delivery Quantity", Delivery_Quantity
 #  Now let us establish the trees connecting nodes in each round.
 #  Now let us establish the trees connecting nodes in each round. So I will establish a dictionary with key element
 #  as a time index, and the value is the nodes will be visited at the key time.
+
+NodzEachTime = {} # key is time and value is nodz
+Ll = Visiting_Time.keys()
+for t in range(int(T)):
+    TempList = [1]  # this is one since the depot has to be within the route.
+    for Nodz in Ll:
+        if t in Visiting_Time[Nodz]:
+            TempList.append(Nodz)
+    if len(TempList) > 1:
+        NodzEachTime.update({t: TempList})
