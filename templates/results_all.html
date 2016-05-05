@@ -1,0 +1,9 @@
+
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style_table.css') }}">
+
+<h4>Delivery Sequence per Planning Period (from depot)</h4>
+{{table_seq|safe}}
+
+<h4>Delivery Quantity per Planning Period</h4>
+{{table_qty|safe}}
+

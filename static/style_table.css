@@ -9,12 +9,12 @@ table.dataframe, .dataframe th, .dataframe td {
   font-size: 0.9em;
 }
 
-table.qty, .qty th, .qty td {
+.qty th {
     background-color: #68dff0;
     color: white;
 }
 
-tr:nth-child(odd)		{ background-color:#eee; }
-tr:nth-child(even)	{ background-color:#fff; }
+tr:nth-child(odd) { background-color:#eee; }
+tr:nth-child(even) { background-color:#fff; }
 
-tr:hover            { background-color: #ffff99;}
+tr:hover { background-color: #ffff99;}

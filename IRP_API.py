@@ -6,6 +6,8 @@ import time
 
 app = Flask(__name__)
 
+df = {}
+
 @app.route('/')
 def root():
     	return render_template('home.html')
@@ -22,7 +24,13 @@ def randomOutput():
 	Visiting_Time,Delivery_Quantity,PathEachTime = getSchedule(N+1,T,cij,d_it,h_it)
 	df_qty = arrangeDF(N+1,T,Visiting_Time,Delivery_Quantity)
 	df_seq = arrangeDFseq(N+1,T,PathEachTime)
-	return render_template('results.html', table_qty = df_qty.to_html(classes='qty',max_rows=10,max_cols=10), table_seq = df_seq.to_html(classes='qty',max_rows=10,max_cols=10))
+	if (N<=10 and T<=10):
+		results_page = 'results.html'
+	else:
+		results_page = 'results_more.html'
+		df['df_qty'] = df_qty
+		df['df_seq'] = df_seq
+	return render_template(results_page, table_qty = df_qty.to_html(classes='qty',max_rows=10,max_cols=10), table_seq = df_seq.to_html(classes='qty',max_rows=10,max_cols=10))
 
 @app.route('/manual')
 def manualInput():
@@ -50,7 +58,12 @@ def manualOutput():
 	Visiting_Time,Delivery_Quantity,PathEachTime = getSchedule(N+1,T,cij,d_it,h_it)
 	df_qty = arrangeDF(N+1,T,Visiting_Time,Delivery_Quantity)
 	df_seq = arrangeDFseq(N+1,T,PathEachTime)
-	return render_template('results.html', table_qty = df_qty.to_html(classes='qty',max_rows=10,max_cols=10), table_seq = df_seq.to_html(classes='qty',max_rows=10,max_cols=10))
+	if (N<=10 and T<=10):
+		results_page = 'results.html'
+	else:
+		results_page = 'results_more.html'
+	return render_template(results_page, table_qty = df_qty.to_html(classes='qty',max_rows=10,max_cols=10), table_seq = df_seq.to_html(classes='qty',max_rows=10,max_cols=10))
+
 
 @app.route('/text')
 def textInput():
@@ -78,11 +91,21 @@ def textOutput():
 				Visiting_Time,Delivery_Quantity,PathEachTime = getSchedule(N+1,T,cij,d_it,h_it)
 				df_qty = arrangeDF(N+1,T,Visiting_Time,Delivery_Quantity)
 				df_seq = arrangeDFseq(N+1,T,PathEachTime)
-				return render_template('results.html', table_qty = df_qty.to_html(classes='qty',max_rows=10,max_cols=10), table_seq = df_seq.to_html(classes='qty',max_rows=10,max_cols=10))
+				if (N<=10 and T<=10):
+					results_page = 'results.html'
+				else:
+					results_page = 'results_more.html'
+				return render_template(results_page, table_qty = df_qty.to_html(classes='qty',max_rows=10,max_cols=10), table_seq = df_seq.to_html(classes='qty',max_rows=10,max_cols=10))
 			else:
 				return 'Invalid data.'
 		else:
 			return 'Invalid file.'
+
+@app.route('/results_all')
+def results_all():
+	df_qty = df['df_qty']
+	df_seq = df['df_seq']
+	return render_template('results_all.html', table_qty = df_qty.to_html(classes='qty'), table_seq = df_seq.to_html(classes='qty'))
 
 
 if  __name__ == '__main__':
