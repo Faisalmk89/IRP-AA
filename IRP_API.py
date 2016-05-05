@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 from DtaSchedule import getSchedule
 from createRandom import genMatrices
-from helperFns import arrangeDF
+from helperFns import arrangeDF, arrangeDFseq
 import time
 
 app = Flask(__name__)
@@ -19,9 +19,10 @@ def randomOutput():
 	N = int(request.form.get('N'))
 	T = int(request.form.get('T'))
 	cij,d_it,h_it = genMatrices(N+1, T)
-	Visiting_Time,Delivery_Quantity = getSchedule(N+1,T,cij,d_it,h_it)
+	Visiting_Time,Delivery_Quantity,PathEachTime = getSchedule(N+1,T,cij,d_it,h_it)
 	df_qty = arrangeDF(N+1,T,Visiting_Time,Delivery_Quantity)
-	return render_template('results.html', table_qty = df_qty.to_html(classes='qty'))
+	df_seq = arrangeDFseq(N+1,T,PathEachTime)
+	return render_template('results.html', table_qty = df_qty.to_html(classes='qty',max_rows=10,max_cols=10), table_seq = df_seq.to_html(classes='qty',max_rows=10,max_cols=10))
 
 @app.route('/manual')
 def manualInput():
@@ -46,9 +47,10 @@ def manualOutput():
 		d_it = [[0]*T] +  zip(*[iter(D_list)]*T)
 		H_list = [float(H_list[i]) for i in range(len(H_list))]
 		h_it = [[0]*T] + zip(*[iter(H_list)]*T)
-	Visiting_Time,Delivery_Quantity = getSchedule(N+1,T,cij,d_it,h_it)
+	Visiting_Time,Delivery_Quantity,PathEachTime = getSchedule(N+1,T,cij,d_it,h_it)
 	df_qty = arrangeDF(N+1,T,Visiting_Time,Delivery_Quantity)
-	return render_template('results.html', table_qty = df_qty.to_html(classes='qty'))
+	df_seq = arrangeDFseq(N+1,T,PathEachTime)
+	return render_template('results.html', table_qty = df_qty.to_html(classes='qty',max_rows=10,max_cols=10), table_seq = df_seq.to_html(classes='qty',max_rows=10,max_cols=10))
 
 @app.route('/text')
 def textInput():
@@ -73,17 +75,14 @@ def textOutput():
 				cij = zip(*[iter(f_list[2:int(2+(N+1)*(N+1))])]*(N+1))
 				d_it = [[0]*T] +  zip(*[iter(f_list[int(2+(N+1)*(N+1)):int(2+(N+1)*(N+1)+(N*T))])]*T)
 				h_it = h_it = [[0]*T] + zip(*[iter(f_list[int(2+(N+1)*(N+1)+(N*T)):int(2+(N+1)*(N+1)+2*(N*T))])]*T)
-				print N, T, cij, d_it, h_it					
-				Visiting_Time,Delivery_Quantity = getSchedule(N+1,T,cij,d_it,h_it)
+				Visiting_Time,Delivery_Quantity,PathEachTime = getSchedule(N+1,T,cij,d_it,h_it)
 				df_qty = arrangeDF(N+1,T,Visiting_Time,Delivery_Quantity)
-				return render_template('results.html', table_qty = df_qty.to_html(classes='qty'))
+				df_seq = arrangeDFseq(N+1,T,PathEachTime)
+				return render_template('results.html', table_qty = df_qty.to_html(classes='qty',max_rows=10,max_cols=10), table_seq = df_seq.to_html(classes='qty',max_rows=10,max_cols=10))
 			else:
 				return 'Invalid data.'
 		else:
 			return 'Invalid file.'
-
-
-
 
 
 if  __name__ == '__main__':

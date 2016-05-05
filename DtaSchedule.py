@@ -247,6 +247,35 @@ def getSchedule(N,T,cij,d_it,h_it):
 		Visiting_Time.update({i: Mat})
 		Delivery_Quantity.update({i: Mot})
 
-	return Visiting_Time, Delivery_Quantity
-
 	#  Now let us establish the trees connecting nodes in each round.
+	NodzEachTime = {} # key is time and value is nodz
+	Ll = Visiting_Time.keys()
+	for t in range(int(T)):
+		TempList = [1]  # this is one since the depot has to be within the route.
+		for Nodz in Ll:
+		    if t in Visiting_Time[Nodz]:
+		        TempList.append(Nodz)
+		if len(TempList) > 1:
+		    NodzEachTime.update({t: TempList})
+
+	# Given we have the nodes to visit each time, now we need to establish a tree connecting the nodes visited each time.
+	PathEachTime = {}
+	for iiter in NodzEachTime.keys():
+		Nodz = NodzEachTime[iiter]
+		i = Nodz[0]
+		Nodz.remove(i)
+		Path = [1]
+		while len(Nodz) > 0:
+		    cijprime = []
+		    for k in Nodz:
+		        cijprime.append(cij[i - 1][k - 1])
+		    j = Nodz[cijprime.index(min(cijprime))]
+		    Path.append(j)
+		    i = Nodz.index(j)
+		    b = Nodz[i]
+		    Nodz.remove(b)
+		PathEachTime.update({iiter: Path})
+
+	return Visiting_Time, Delivery_Quantity, PathEachTime
+
+	

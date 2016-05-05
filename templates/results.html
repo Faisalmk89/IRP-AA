@@ -33,10 +33,17 @@ Schedules
 
 {% block contents %}
 
-	<h4>
-Delivery Quantity per Planning Period
-	</h4>
-
-{{table_qty|safe}}
+<div class="tab-pane">
+	<div class="row mt">
+		<div class="col-lg-6">
+			<h4>Delivery Sequence per Planning Period (from depot)</h4>
+			{{table_seq|safe}}
+		</div>
+		<div class="col-lg-6">
+			<h4>Delivery Quantity per Planning Period</h4>
+			{{table_qty|safe}}
+		</div>
+	</div>
+</div>		
 
 {% endblock contents %}

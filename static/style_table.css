@@ -9,7 +9,7 @@ table.dataframe, .dataframe th, .dataframe td {
   font-size: 0.9em;
 }
 
-.qty th {
+table.qty, .qty th, .qty td {
     background-color: #68dff0;
     color: white;
 }
