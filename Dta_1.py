@@ -327,3 +327,25 @@ for t in range(int(T)):
             TempList.append(Nodz)
     if len(TempList) > 1:
         NodzEachTime.update({t: TempList})
+
+print "NodzEachTime", NodzEachTime
+# Given we have the nodes to visit each time, now we need to establish a tree connecting the nodes visited each time.
+PathEachTime = {}
+for iiter in NodzEachTime.keys():
+    Nodz = NodzEachTime[iiter]
+    i = Nodz[0]
+    Nodz.remove(i)
+    Path = [1]
+    while len(Nodz) > 0:
+        cijprime = []
+        for k in Nodz:
+            cijprime.append(cij[i - 1][k - 1])
+        j = Nodz[cijprime.index(min(cijprime))]
+        Path.append(j)
+        i = Nodz.index(j)
+        b = Nodz[i]
+        Nodz.remove(b)
+    PathEachTime.update({iiter: Path})
+
+print PathEachTime
+#  PathEachTime is the sequence of customers to visit each time a set of those customers are scheduled to be visited.
