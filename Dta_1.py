@@ -328,7 +328,6 @@ for t in range(int(T)):
     if len(TempList) > 1:
         NodzEachTime.update({t: TempList})
 
-print "NodzEachTime", NodzEachTime
 # Given we have the nodes to visit each time, now we need to establish a tree connecting the nodes visited each time.
 PathEachTime = {}
 for iiter in NodzEachTime.keys():
@@ -347,5 +346,5 @@ for iiter in NodzEachTime.keys():
         Nodz.remove(b)
     PathEachTime.update({iiter: Path})
 
-print PathEachTime
+print "Path at each scheduled visit:", PathEachTime
 #  PathEachTime is the sequence of customers to visit each time a set of those customers are scheduled to be visited.
