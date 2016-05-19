@@ -346,5 +346,6 @@ for iiter in NodzEachTime.keys():
         Nodz.remove(b)
     PathEachTime.update({iiter: Path})
 
-print "Path at each scheduled visit:", PathEachTime
 #  PathEachTime is the sequence of customers to visit each time a set of those customers are scheduled to be visited.
+for key in sorted(PathEachTime.iterkeys()):
+    print "%s: %s" % (key, PathEachTime[key])
